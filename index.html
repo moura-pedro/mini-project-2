@@ -15,40 +15,42 @@
 <header>
   <h1>My Events Manager</h1>
   <p id="event-count">Showing: 0 events</p>
+
+  <!-- Filter Section -->
+  <div class="filter-section">
+    <div class="filter-group">
+      <label for="show-events">Show</label>
+      <select id="show-events">
+        <option value="all">All</option>
+        <!-- Other options if we want them-->
+      </select>
+    </div>
+
+    <!-- Title -->
+    <div class="filter-group">
+      <label for="filter-title">Title</label>
+      <input type="text" id="filter-title" placeholder="Enter Title">
+    </div>
+
+    <!-- Description -->
+    <div class="filter-group">
+      <label for="filter-description">Desc</label>
+      <input type="text" id="filter-description" placeholder="Enter Description">
+    </div>
+
+    <!-- Date -->
+    <div class="filter-group">
+      <label for="filter-date">Date</label>
+      <input type="text" id="filter-date" placeholder="Enter Date">
+    </div>
+
+    <!-- Submit and Clear -->
+    <button id="apply-filters">Submit</button>
+    <button id="clear-filters">Clear Filters</button>
+  </div>
 </header>
 
-<!-- Filter Section -->
-<div class="filter-section">
-  <div class="filter-group">
-    <label for="show-events">Show</label>
-    <select id="show-events">
-      <option value="all">All</option>
-      <!-- Other options if we want them-->
-    </select>
-  </div>
 
-  <!-- Title -->
-  <div class="filter-group">
-    <label for="filter-title">Title</label>
-    <input type="text" id="filter-title" placeholder="Enter Title">
-  </div>
-
-  <!-- Description -->
-  <div class="filter-group">
-    <label for="filter-description">Desc</label>
-    <input type="text" id="filter-description" placeholder="Enter Description">
-  </div>
-
-  <!-- Date -->
-  <div class="filter-group">
-    <label for="filter-date">Date</label>
-    <input type="text" id="filter-date" placeholder="Enter Date">
-  </div>
-
-  <!-- Submit and Clear -->
-  <button id="apply-filters">Submit</button>
-  <button id="clear-filters">Clear Filters</button>
-</div>
 
 
 <!-- Main Container for Event Cards -->
