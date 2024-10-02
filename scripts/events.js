@@ -1,32 +1,35 @@
-fetch('dataset/events.rss')
+"use strict";
+
+let events = [];
+
+const getEvents = () => {
+    return fetch('dataset/events.rss')
     .then(response => response.text())
     .then(str => {
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(str, "text/xml");
-        const items = xmlDoc.querySelectorAll('item');
-        const events = [];
+        let parser = new DOMParser();
+        let xmlDoc = parser.parseFromString(str, "text/xml");
+        let items = xmlDoc.querySelectorAll('item');
 
     items.forEach(item => {
         // Extract data
+        let title = item.querySelector('title') ? item.querySelector('title').textContent : 'No Title';
+        let enclosure = item.querySelector('enclosure');
+        let imageUrl = enclosure ? enclosure.getAttribute('url') : 'assets/default_img.png';
 
-        const title = item.querySelector('title') ? item.querySelector('title').textContent : 'No Title';
-        const enclosure = item.querySelector('enclosure');
-        const imageUrl = enclosure ? enclosure.getAttribute('url') : 'assets/default_img.png';
+        let startDateStr = item.querySelector('start') ? item.querySelector('start').textContent : null;
+        let startDate = startDateStr ? new Date(startDateStr) : new Date();
+        let options = { weekday: 'long', month: 'long', day: '2-digit', year: 'numeric' };
+        let formattedStartDate = startDate.toLocaleDateString('en-US', options);
 
-        const startDateStr = item.querySelector('start') ? item.querySelector('start').textContent : null;
-        const startDate = startDateStr ? new Date(startDateStr) : new Date();
-        const options = { weekday: 'long', month: 'long', day: '2-digit', year: 'numeric' };
-        const formattedStartDate = startDate.toLocaleDateString('en-US', options);
+        let location = item.querySelector('location').textContent || 'Location not present';
 
-        const location = item.querySelector('location').textContent || 'Location not present';
-
-        const descriptionCData = item.querySelector('description').textContent;
-        const descriptionParser = new DOMParser();
-        const descriptionDoc = descriptionParser.parseFromString(descriptionCData, "text/html");
-        const description = descriptionDoc.body.innerHTML;
+        let descriptionCData = item.querySelector('description').textContent;
+        let descriptionParser = new DOMParser();
+        let descriptionDoc = descriptionParser.parseFromString(descriptionCData, "text/html");
+        let description = descriptionDoc.body.innerHTML;
 
         // Store current event data
-        const event = {
+        let event = {
             title,
             imageUrl,
             startDate: formattedStartDate,
@@ -36,7 +39,7 @@ fetch('dataset/events.rss')
         events.push(event);
 
         // Create the card for current event
-        const article = document.createElement('article');
+        let article = document.createElement('article');
         article.innerHTML = `
             <img src="${imageUrl}" alt="${title}">
             <h2>${title}</h2>
@@ -49,8 +52,8 @@ fetch('dataset/events.rss')
         `;
 
         // Add Learn more toggle for current event
-        const learnMore = article.querySelector('.learn-more');
-        const descriptionData = article.querySelector('.description');
+        let learnMore = article.querySelector('.learn-more');
+        let descriptionData = article.querySelector('.description');
 
         learnMore.addEventListener('click', (e) => {
             e.preventDefault();
@@ -68,3 +71,6 @@ fetch('dataset/events.rss')
         });
     })
     .catch(error => console.error('error on fetching data', error));
+}
+
+getEvents()
