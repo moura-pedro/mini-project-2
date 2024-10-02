@@ -20,9 +20,9 @@ h1 {
 }
 
 header {
-    background: linear-gradient(90deg, #2a2d9f, #6b2dbe);
-    padding: 20px;
-    text-align: center;
+    background: linear-gradient(to right, #0e1174, #c830aa);
+    padding: 0.5px 20px ;
+    text-align: left;
     color: white;
 }
 
@@ -117,7 +117,7 @@ header {
 main {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: left;
     padding: 20px;
     width: 95%;
     max-width: 1400px;
@@ -163,7 +163,6 @@ article .learn-more {
 
 article .description {
     padding: 10px;
-    background-color: #f9f9f9;
     display: none;
 }
 
