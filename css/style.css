@@ -1,0 +1,182 @@
+/* General Styles */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f3f3f3;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+h1 {
+    font-size: 2em;
+    color: #fff;
+}
+
+header {
+    background: linear-gradient(90deg, #2a2d9f, #6b2dbe);
+    padding: 20px;
+    text-align: center;
+    color: white;
+}
+
+#event-count {
+    font-size: 1.2em;
+}
+
+/* Filter Section Styles */
+.filter-section {
+    background-color: #fff;
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: flex-start;
+    align-items: center;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+    width: 95%;
+    max-width: 1400px;
+}
+
+/* Label and Input Group Styling */
+.filter-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    flex: 1 1 auto;
+    width: auto;
+}
+
+.filter-group label {
+    min-width: 70px;
+    text-align: left;
+}
+
+.filter-group select,
+.filter-group input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    flex: 1 1 auto;
+}
+
+.filter-section button {
+    padding: 8px 16px;
+    background-color: #2a2d9f;
+    color: white;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+}
+
+.filter-section button:hover {
+    background-color: #6b2dbe;
+}
+
+/* Mobile View */
+@media (max-width: 768px) {
+    .filter-section {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+
+    .filter-group {
+        flex-direction: row;
+        width: 100%;
+    }
+
+    .filter-group label {
+        flex: 0 0 80px;
+    }
+
+    .filter-group select,
+    .filter-group input {
+        flex: 1 1 auto;
+    }
+
+    .filter-section button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+
+
+
+
+
+/* Main Layout for Cards */
+main {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 20px;
+    width: 95%;
+    max-width: 1400px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* Each card should occupy 20% of the screen on larger screens (5 cards per row) */
+article {
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: calc(20% - 20px);
+    margin: 10px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+article img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+article h2 {
+    font-size: 1.2em;
+    margin: 10px;
+}
+
+article p {
+    margin: 10px;
+}
+
+article .learn-more {
+    margin: 10px;
+    text-decoration: none;
+    color: #2a2d9f;
+    cursor: pointer;
+}
+
+article .description {
+    padding: 10px;
+    background-color: #f9f9f9;
+    display: none;
+}
+
+/* Mobile Responsiveness for Cards */
+@media (max-width: 768px) {
+    main {
+        flex-direction: column;
+        width: 100%;
+        padding: 0;
+    }
+
+    article {
+        width: 100%;
+        margin: 10px 0;
+    }
+}
