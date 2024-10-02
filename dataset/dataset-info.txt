@@ -1,0 +1,33 @@
+Document created for fulture referencing.
+(Helps map what I need to extract from the XML 
+whithout having to keep referring to the actual XML file)
+
+'events.rss' structure:
+
+<rss version="2.0">
+  <channel>
+    <!-- Channel Metadata -->
+    <title></title>
+    <description></description>
+    <!-- ... couple more stuff ... -->
+
+    <!-- List of Events -->
+    <item>
+      <!-- Event Details (That's what we want) -->
+    </item>
+    <!-- ... followed by bunch of <item> elements ... -->
+  </channel>
+</rss>
+
+----------------------------------------------------------------------------------------------------
+So, basically from each <item> element we mostly focus on extracting the following data:
+
+  - Event Title: From <title>
+  - Image URL: From the url attribute of <enclosure>.
+    - Use a default image if <enclosure> is absent. Found the img he used on the example here:
+        https://calendar.syracuse.edu/events/2021-feb-27/delta-sigma-pi-interview-day/
+  - Start Date: From <start>, formatted as EEEE, MMMM dd, yyyy (like: Wednesday, October 2, 2024)
+  - Location: From <location>
+  - Description: Extracted from <description>
+    - Looks like it needs parsing due to CDATA and embedded HTML
+      - Dr. Fitz added this on Tips: https://www.tutorialspoint.com/xml/xml_cdata_sections.htm
