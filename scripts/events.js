@@ -61,12 +61,10 @@ function createEventCard(event) {
     article.innerHTML = `
         <img src="${event.imageUrl}" alt="${event.title}">
         <h2>${event.title}</h2>
-        <p>${event.startDate}</p>
+        <p class="event-date">${event.startDate}</p>
         <p>${event.location}</p>
         <a href="#" class="learn-more">Learn more</a>
-        <div class="description" style="display: none;">
-        ${event.description}
-        </div>
+        <div class="description">${event.description}</div>
     `;
 
     // Add toggle functionality for "Learn more"
