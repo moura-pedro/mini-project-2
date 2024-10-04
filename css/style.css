@@ -18,6 +18,7 @@ h1 {
     font-size: 2em;
     color: #fff;
     margin-left: 3%;
+    font-weight: bold;
 
 }
 
@@ -31,12 +32,13 @@ header {
 #event-count {
     font-size: 1.2em;
     margin-left: 3%;
+
 }
 
 /* Filter Section Styles */
 .filter-section {
     background: linear-gradient(to right, #0b0d5e, #a22486);
-    padding: 20px;
+    padding: 0;
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
@@ -90,6 +92,11 @@ header {
 
 .filter-section button:hover {
     background-color: #6b2dbe;
+}
+
+.filter-section legend {
+    padding: 0 0;
+    color: white;
 }
 
 /* Mobile View */
@@ -162,6 +169,7 @@ article h2 {
 
 article p {
     margin: 10px;
+
 }
 
 article .learn-more {

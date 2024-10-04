@@ -16,14 +16,16 @@
   <h1>My Events Manager</h1>
   <p id="event-count">Showing: 0 events</p>
 
-  <!-- Filter Section -->
-  <div class="filter-section">
-    <div class="filter-group">
-      <label for="show-events">Show</label>
-      <select id="show-events">
-        <option value="all">All</option>
-        <!-- Other options if we want them-->
-      </select>
+  <fieldset class="filter-section">
+    <legend>Filter Events</legend>
+    <!-- Filter Section -->
+    <div class="filter-section">
+      <div class="filter-group">
+        <label for="show-events">Show</label>
+       <select id="show-events">
+         <option value="all">All</option>
+          <!-- Other options if we want them-->
+        </select>
     </div>
 
     <!-- Title -->
@@ -48,6 +50,7 @@
     <button id="apply-filters">Submit</button>
     <button id="clear-filters">Clear Filters</button>
   </div>
+    
 </header>
 
 
