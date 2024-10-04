@@ -20,30 +20,32 @@ h1 {
 }
 
 header {
-    background: linear-gradient(to right, #0e1174, #c830aa);
+    background: linear-gradient(to right, #0e1174, 70% , #c830aa);
     padding: 0.5px 20px ;
     text-align: left;
     color: white;
 }
 
 #event-count {
-    font-size: 1.2em;
+    font-size: 1em;
 }
 
 /* Filter Section Styles */
 .filter-section {
-    background-color: #fff;
-    padding: 20px;
+    /* background-color: #fff; */
+    padding: 5px;
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
     justify-content: flex-start;
     align-items: center;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     margin: 20px auto;
-    width: 95%;
+    width: 100%;
     max-width: 1400px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: rgba(14, 17, 116, 0.5);
+
 }
 
 /* Label and Input Group Styling */
@@ -54,11 +56,16 @@ header {
     gap: 10px;
     flex: 1 1 auto;
     width: auto;
+    color: black;
+    background-color: rgb(235, 235, 235);
+    border: none;
+    border-radius: 4px;
 }
 
 .filter-group label {
-    min-width: 70px;
+    /* min-width: 70px; */
     text-align: left;
+    padding-left: 10px;
 }
 
 .filter-group select,
@@ -71,8 +78,8 @@ header {
 
 .filter-section button {
     padding: 8px 16px;
-    background-color: #2a2d9f;
-    color: white;
+    background-color: white;
+    color: black;
     cursor: pointer;
     border: none;
     border-radius: 4px;
