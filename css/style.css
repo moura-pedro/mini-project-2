@@ -17,6 +17,8 @@ body {
 h1 {
     font-size: 2em;
     color: #fff;
+    margin-left: 3%;
+
 }
 
 header {
@@ -28,11 +30,12 @@ header {
 
 #event-count {
     font-size: 1.2em;
+    margin-left: 3%;
 }
 
 /* Filter Section Styles */
 .filter-section {
-    background-color: #fff;
+    background: linear-gradient(to right, #0b0d5e, #a22486);
     padding: 20px;
     display: flex;
     flex-wrap: wrap;
@@ -44,6 +47,8 @@ header {
     margin: 20px auto;
     width: 95%;
     max-width: 1400px;
+
+    
 }
 
 /* Label and Input Group Styling */
@@ -53,12 +58,17 @@ header {
     align-items: center;
     gap: 10px;
     flex: 1 1 auto;
+    background-color: #F4F4F5;
+    border-radius: 8px;
+    padding: 8px;
     width: auto;
 }
 
 .filter-group label {
-    min-width: 70px;
+    min-width: 50px;
     text-align: left;
+    color: Black;
+
 }
 
 .filter-group select,
@@ -70,7 +80,7 @@ header {
 }
 
 .filter-section button {
-    padding: 8px 16px;
+    padding: 12px 20px;
     background-color: #2a2d9f;
     color: white;
     cursor: pointer;
