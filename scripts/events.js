@@ -1,6 +1,7 @@
 "use strict";
 
 let events = [];
+let categories = new Set();
 
 const getEvents = () => {
     return fetch('dataset/events.rss')
@@ -10,43 +11,44 @@ const getEvents = () => {
         let xmlDoc = parser.parseFromString(str, "text/xml");
         let items = xmlDoc.querySelectorAll('item');
 
-    items.forEach(item => {
-        // Extract data
-        let title = item.querySelector('title') ? item.querySelector('title').textContent : 'No Title';
-        let enclosure = item.querySelector('enclosure');
-        let imageUrl = enclosure ? enclosure.getAttribute('url') : 'assets/default_img.png';
+        items.forEach(item => {
+            // Extract data
+            let title = item.querySelector('title') ? item.querySelector('title').textContent : 'No Title';
+            let enclosure = item.querySelector('enclosure');
+            let imageUrl = enclosure ? enclosure.getAttribute('url') : 'assets/default_img.png';
 
-        let startDateStr = item.querySelector('start') ? item.querySelector('start').textContent : null;
-        let startDate = startDateStr ? new Date(startDateStr) : new Date();
-        let options = { weekday: 'long', month: 'long', day: '2-digit', year: 'numeric' };
-        let formattedStartDate = startDate.toLocaleDateString('en-US', options);
+            let startDateStr = item.querySelector('start') ? item.querySelector('start').textContent : null;
+            let startDate = startDateStr ? new Date(startDateStr) : new Date();
+            let options = { weekday: 'long', month: 'long', day: '2-digit', year: 'numeric' };
+            let formattedStartDate = startDate.toLocaleDateString('en-US', options);
 
-        let location = item.querySelector('location').textContent || 'Location not present';
+            let location = item.querySelector('location').textContent || 'Location not present';
 
-        let descriptionCData = item.querySelector('description').textContent;
-        let descriptionParser = new DOMParser();
-        let descriptionDoc = descriptionParser.parseFromString(descriptionCData, "text/html");
-        let description = descriptionDoc.body.innerHTML;
+            let descriptionCData = item.querySelector('description').textContent;
+            let descriptionParser = new DOMParser();
+            let descriptionDoc = descriptionParser.parseFromString(descriptionCData, "text/html");
+            let description = descriptionDoc.body.innerHTML;
 
-        // Store current event data
-        let event = {
-            title,
-            imageUrl,
-            startDate: formattedStartDate,
-            location,
-            description,
-        };
-        events.push(event);
+            let category = item.querySelector('category') ? item.querySelector('category').textContent : 'Uncategorized';
+            categories.add(category);
 
-        // Create and display event cards
-        createEventCard(event);
+            // Store current event data
+            let event = {
+                title,
+                imageUrl,
+                startDate: formattedStartDate,
+                location,
+                description,
+                category,
+            };
+            events.push(event);
+
+            createEventCard(event);
 
         });
 
-        // Display total number of events
+        populateCategories(categories);
         updateEventCount(events.length, events.length);
-
-        // Add filtering functionality after the events are loaded
         addFilterFunctionality(events);
     })
     .catch(error => console.error('error on fetching data', error));
@@ -73,7 +75,7 @@ function createEventCard(event) {
 
     learnMore.addEventListener('click', (e) => {
         e.preventDefault();
-        if (descriptionData.style.display === 'none') {
+        if (descriptionData.style.display === 'none' || !descriptionData.style.display) {
             descriptionData.style.display = 'block';
             learnMore.textContent = 'Show less';
         } else {
@@ -85,37 +87,59 @@ function createEventCard(event) {
     document.querySelector('main').appendChild(article);
 }
 
-
 // Function to update event count
 function updateEventCount(count, total) {
     const eventCount = document.getElementById('event-count');
     eventCount.textContent = `Showing: ${count}/${total} events`;
 }
 
+// Function to populate categories into the select element
+function populateCategories(categories) {
+    const categorySelect = document.getElementById('filter-category');
+    // Clear any existing options
+    categorySelect.innerHTML = '';
+
+    const allOption = document.createElement('option');
+    allOption.value = '';
+    allOption.textContent = 'All';
+    categorySelect.appendChild(allOption);
+
+    categories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category;
+        option.textContent = category;
+        categorySelect.appendChild(option);
+    });
+}
 
 // Function to add filter functionality
 function addFilterFunctionality(events) {
-    // Add event listener to the 'Apply Filters' button
     document.getElementById('apply-filters').addEventListener('click', () => {
         const titleValue = document.getElementById('filter-title').value;
         const dateValue = document.getElementById('filter-date').value;
         const descriptionValue = document.getElementById('filter-description').value;
+        const categoryValue = document.getElementById('filter-category').value;
 
         let filteredEvents = events;
 
-        // Filter by title if a title value is provided
+        // Filter by title
         if (titleValue) {
             filteredEvents = filterEvents(filteredEvents, titleValue, (event) => titleFilter(event, titleValue));
         }
 
-        // Filter by date if a date value is provided
+        // Filter by date 
         if (dateValue) {
             filteredEvents = filterEvents(filteredEvents, dateValue, (event) => dateFilter(event, dateValue));
         }
 
-        // Filter by description if a description value is provided
+        // Filter by description
         if (descriptionValue) {
             filteredEvents = filterEvents(filteredEvents, descriptionValue, (event) => descriptionFilter(event, descriptionValue));
+        }
+
+        // Filter by category
+        if (categoryValue) {
+            filteredEvents = filterEvents(filteredEvents, categoryValue, (event) => categoryFilter(event, categoryValue));
         }
 
         // Clear current events display
@@ -136,6 +160,7 @@ function addFilterFunctionality(events) {
         document.getElementById('filter-title').value = '';
         document.getElementById('filter-date').value = '';
         document.getElementById('filter-description').value = '';
+        document.getElementById('filter-category').value = '';
 
         // Reset events display
         document.querySelector('main').innerHTML = '';
@@ -146,19 +171,15 @@ function addFilterFunctionality(events) {
     });
 }
 
-
-// Generic filter function
+// -------- Filter functions -------- //
 function filterEvents(events, filterValue, filterFunction) {
-    if (!filterValue) return events; // If no filter value is provided, return all events
+    if (!filterValue) return events;
     return events.filter(filterFunction);
 }
 
-
-// Filter functions
 function titleFilter(event, title) {
     return event.title.toLowerCase().includes(title.toLowerCase());
 }
-
 
 function dateFilter(event, date) {
     const eventDate = new Date(event.startDate);
@@ -166,9 +187,12 @@ function dateFilter(event, date) {
     return eventDate.toDateString() === filterDate.toDateString();
 }
 
-
 function descriptionFilter(event, description) {
     return event.description.toLowerCase().includes(description.toLowerCase());
 }
 
-getEvents()
+function categoryFilter(event, category) {
+    return event.category === category;
+}
+
+getEvents();

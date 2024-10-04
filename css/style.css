@@ -28,6 +28,7 @@ header {
 
 #event-count {
     font-size: 1em;
+    font-weight:100;
 }
 
 /* Filter Section Styles */
