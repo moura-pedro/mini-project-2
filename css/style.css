@@ -82,6 +82,7 @@ header {
     background-color: #6b2dbe;
 }
 
+
 /* Mobile View */
 @media (max-width: 768px) {
     .filter-section {
@@ -108,9 +109,6 @@ header {
         margin-bottom: 10px;
     }
 }
-
-
-
 
 
 /* Main Layout for Cards */
