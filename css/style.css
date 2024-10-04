@@ -183,7 +183,18 @@ article .description {
     display: none;
     margin-left: 10px;
     text-align: left;
-    
+}
+
+article .description * {
+    margin: 0;
+    margin-bottom: 10px;
+    padding: 0;
+}
+
+article .description p {
+    margin: 0;
+    margin-bottom: 10px;
+    padding: 0;
 }
 
 
