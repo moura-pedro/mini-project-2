@@ -26,6 +26,20 @@ header {
     color: white;
 }
 
+footer {
+    margin-top: 0;
+    margin-bottom: -10px;
+    padding-bottom: 5px;
+    height: 100px;
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
 #event-count {
     font-size: 1em;
     font-weight:100;
@@ -196,7 +210,6 @@ article .description p {
     margin-bottom: 10px;
     padding: 0;
 }
-
 
 
 /* Mobile Responsiveness for Cards */

@@ -2,6 +2,8 @@
 
 let events = [];
 let categories = new Set();
+let pagefilter = "all";
+let pageindex = 0;
 
 const getEvents = () => {
     return fetch('dataset/events.rss')
@@ -10,7 +12,6 @@ const getEvents = () => {
         let parser = new DOMParser();
         let xmlDoc = parser.parseFromString(str, "text/xml");
         let items = xmlDoc.querySelectorAll('item');
-
         items.forEach(item => {
             // Extract data
             let title = item.querySelector('title') ? item.querySelector('title').textContent : 'No Title';
@@ -57,7 +58,38 @@ const getEvents = () => {
 
 // ------ Helper Functions ------ //
 
+// Function to render list of events
+
+function renderEvents(eventsToRender) {
+    let maxindex = 0;
+    let nextdisabled = false;
+    if (pagefilter === "all") {
+        maxindex = eventsToRender.length
+        pageindex = 0
+    } else {
+        if (eventsToRender.length < pageindex + pagefilter) {
+            maxindex = eventsToRender.length;
+            nextdisabled = true;
+        } else {
+            maxindex = pageindex + pagefilter;
+        }
+    }    
+    document.querySelector('main').innerHTML = '';
+    if (pageindex === 0) {
+        document.getElementById("prev-nav-button").disabled = true;
+    } else {
+        document.getElementById("prev-nav-button").disabled = false;
+    }
+
+    document.getElementById("next-nav-button").disabled = nextdisabled;
+
+    for (let i = pageindex; i < maxindex; i++) {
+        createEventCard(eventsToRender[i])
+    }
+}
+
 // Function to create an event card
+
 function createEventCard(event) {
     const article = document.createElement('article');
     article.innerHTML = `
@@ -142,13 +174,7 @@ function addFilterFunctionality(events) {
             filteredEvents = filterEvents(filteredEvents, categoryValue, (event) => categoryFilter(event, categoryValue));
         }
 
-        // Clear current events display
-        document.querySelector('main').innerHTML = '';
-
-        // Display filtered events
-        filteredEvents.forEach(event => {
-            createEventCard(event);
-        });
+        renderEvents(filteredEvents)
 
         // Update event count
         updateEventCount(filteredEvents.length, events.length);
@@ -194,5 +220,45 @@ function descriptionFilter(event, description) {
 function categoryFilter(event, category) {
     return event.category === category;
 }
+
+function amountOfEventFilter() {
+    document.getElementById('amount-filter').addEventListener('change', () => {
+        pagefilter = document.getElementById('filter-category').value
+    })
+}
+
+function nextPage() {
+    document.getElementById('next-nav-button').addEventListener('click', () => {
+        pageindex = pageindex + intamountFilter
+
+    })
+}
+
+document.getElementById('next-nav-button').addEventListener('click', () => {
+    if (pagefilter !== "all") {
+        pageindex = pageindex + Number(pagefilter)
+        renderEvents(events)
+    }
+})
+
+document.getElementById('prev-nav-button').addEventListener('click', () => {
+    if (pagefilter !== "all") {
+        pageindex = pageindex - Number(pagefilter)
+        pageindex = Math.max(0, pageindex)
+        renderEvents(events)
+    }
+})
+
+document.getElementById('amount-filter').addEventListener('change', () => {
+    pagefilter = document.getElementById('amount-filter').value
+    if (pagefilter === "all") {
+        document.getElementById('next-nav-button').disabled = true;
+        document.getElementById('prev-nav-button').disabled = true;
+    } else {
+        document.getElementById('next-nav-button').disabled = false;
+        document.getElementById('prev-nav-button').disabled = false;
+    }
+    renderEvents(events)
+})
 
 getEvents();

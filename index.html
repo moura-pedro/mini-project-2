@@ -16,6 +16,20 @@
   <h1>My Events Manager</h1>
   <p id="event-count">Showing: 0 events</p>
 
+  <fieldset class="filter-section">
+    <div class="filter-group">
+      <label>Events Per Page</label>
+      <select id="amount-filter" class="filter-category">
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+        <option value="all">All</option>
+      </select>
+      <button id="prev-nav-button">Previous</button>
+      <button id="next-nav-button">Next</button>
+    </div>
+  </fieldset>
+
   <!-- Filter Section -->
   <fieldset class="filter-section">
     <legend>Filter Events</legend>
@@ -58,4 +72,19 @@
 <main></main>
 
 </body>
+<footer></footer>
+<fieldset class="filter-section">
+  <div class="filter-group">
+    <label>Events Per Page</label>
+    <select class="filter-category">
+      <option value="25">25</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+      <option value="all">All</option>
+    </select>
+    <button>Previous</button>
+    <button>Next</button>
+  </div>
+</fieldset>
+</footer>
 </html>
