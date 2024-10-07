@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Events Manager</title>
-  <!-- CSS Style Sheet -->
   <link rel="stylesheet" href="css/style.css">
-  <!-- JS to read in Data -->
   <script defer src="scripts/events.js"></script>
 </head>
 <body>
@@ -15,20 +13,6 @@
 <header>
   <h1>My Events Manager</h1>
   <p id="event-count">Showing: 0 events</p>
-
-  <fieldset class="filter-section">
-    <div class="filter-group">
-      <label>Events Per Page</label>
-      <select id="amount-filter" class="filter-category">
-        <option value="25">25</option>
-        <option value="50">50</option>
-        <option value="100">100</option>
-        <option value="all">All</option>
-      </select>
-      <button id="prev-nav-button">Previous</button>
-      <button id="next-nav-button">Next</button>
-    </div>
-  </fieldset>
 
   <!-- Filter Section -->
   <fieldset class="filter-section">
@@ -41,50 +25,49 @@
       </select>
     </div>
 
-    <!-- Title -->
     <div class="filter-group">
       <label for="filter-title">Title</label>
       <input type="text" id="filter-title" placeholder="Enter Title">
     </div>
 
-    <!-- Description -->
     <div class="filter-group">
       <label for="filter-description">Desc</label>
       <input type="text" id="filter-description" placeholder="Enter Description">
     </div>
 
-    <!-- Date -->
     <div class="filter-group">
       <label for="filter-date">Date</label>
       <input type="text" id="filter-date" placeholder="Enter Date">
     </div>
 
-    <!-- Submit and Clear -->
-    <button id="apply-filters">Submit</button>
-    <button id="clear-filters">Clear Filters</button>
+    <div class="apply-close">
+      <button id="apply-filters">Submit</button>
+      <button id="clear-filters">Clear Filters</button>
+    </div>
+
   </fieldset>
+
+  <fieldset class="filter-section">
+    <div class="filter-group">
+      <label>Events Per Page</label>
+      <select id="amount-filter" class="filter-category">
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+        <option value="all">All</option>
+      </select>
+    </div>
+  </fieldset>
+
 </header>
 
 
 
-
-<!-- Main Container for Event Cards -->
+<!-- Main Container for Cards -->
 <main></main>
 
+<!-- Pagination Container -->
+<div id="pagination" class="pagination-container"></div>
+
 </body>
-<footer></footer>
-<fieldset class="filter-section">
-  <div class="filter-group">
-    <label>Events Per Page</label>
-    <select class="filter-category">
-      <option value="25">25</option>
-      <option value="50">50</option>
-      <option value="100">100</option>
-      <option value="all">All</option>
-    </select>
-    <button>Previous</button>
-    <button>Next</button>
-  </div>
-</fieldset>
-</footer>
 </html>

@@ -20,15 +20,15 @@ h1 {
 }
 
 header {
-    background: linear-gradient(to right, #0e1174, 70% , #c830aa);
-    padding: 0.5px 20px ;
+    background: linear-gradient(to right, #0e1174, 70%, #c830aa);
+    padding: 0.5px 20px;
     text-align: left;
     color: white;
 }
 
 footer {
     margin-top: 0;
-    margin-bottom: -10px;
+    margin-bottom: 10px;
     padding-bottom: 5px;
     height: 100px;
 }
@@ -42,12 +42,11 @@ button:disabled {
 
 #event-count {
     font-size: 1em;
-    font-weight:100;
+    font-weight: 100;
 }
 
 /* Filter Section Styles */
 .filter-section {
-    /* background-color: #fff; */
     padding: 5px;
     display: flex;
     flex-wrap: wrap;
@@ -60,7 +59,6 @@ button:disabled {
     border: 1px solid #ccc;
     border-radius: 10px;
     background-color: rgba(14, 17, 116, 0.5);
-
 }
 
 /* Label and Input Group Styling */
@@ -78,9 +76,9 @@ button:disabled {
 }
 
 .filter-group label {
-    /* min-width: 70px; */
     text-align: left;
     padding-left: 10px;
+
 }
 
 .filter-group select,
@@ -89,6 +87,7 @@ button:disabled {
     border: 1px solid #ccc;
     border-radius: 4px;
     flex: 1 1 auto;
+
 }
 
 .filter-section button {
@@ -104,34 +103,74 @@ button:disabled {
     background-color: #9d5eee;
 }
 
+/* Button Group Styling */
+.apply-close {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
 
 /* Mobile View */
 @media (max-width: 768px) {
-    .filter-section {
-        flex-wrap: wrap;
-        justify-content: flex-start;
-    }
-
-    .filter-group {
-        flex-direction: row;
+    .apply-close {
+        justify-content: center;
         width: 100%;
     }
 
-    .filter-group label {
-        flex: 0 0 80px;
-    }
-
-    .filter-group select,
-    .filter-group input {
-        flex: 1 1 auto;
-    }
-
-    .filter-section button {
-        width: 100%;
-        margin-bottom: 10px;
+    .apply-close button {
+        width: 48%;
     }
 }
 
+
+/* Pagination Styling */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+    margin-bottom: 50px;
+}
+
+.page-link {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    text-decoration: none;
+    color: #333;
+    transition: background-color 0.2s ease;
+}
+
+.page-link.active {
+    background-color: #9d5eee;
+    color: #fff;
+    font-weight: bold;
+}
+
+.page-link:hover {
+    background-color: #9d5eee;
+    color: #fff;
+}
+
+.pagination-container span {
+    padding: 5px;
+}
+
+/* Mobile View Pagination */
+@media (max-width: 768px) {
+    .pagination-container {
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    .pagination-container button,
+    .pagination-container a,
+    .pagination-container span {
+        font-size: 1rem;
+    }
+}
 
 /* Main Layout for Cards */
 main {
@@ -142,10 +181,8 @@ main {
     width: 95%;
     max-width: 1400px;
     margin: 0 auto;
-    /* box-sizing: border-box; */
 }
 
-/* Each card should occupy 20% of the screen on larger screens (5 cards per row) */
 article {
     background-color: white;
     overflow: hidden;
@@ -174,23 +211,17 @@ article p {
 
 article p.event-date {
     font-size: small;
-    /* display: none; */
 }
 
 article .learn-more {
     margin: 10px;
     padding: 5px;
-    width:fit-content;
+    width: fit-content;
     text-decoration: none;
     color: #2a2d9f;
     cursor: pointer;
     background-color: rgb(240, 240, 240);
     border-radius: 5px;
-    
-}
-
-article p.description description {
-    margin-left: 10px;
 }
 
 article .description {
@@ -198,19 +229,6 @@ article .description {
     margin-left: 10px;
     text-align: left;
 }
-
-article .description * {
-    margin: 0;
-    margin-bottom: 10px;
-    padding: 0;
-}
-
-article .description p {
-    margin: 0;
-    margin-bottom: 10px;
-    padding: 0;
-}
-
 
 /* Mobile Responsiveness for Cards */
 @media (max-width: 768px) {

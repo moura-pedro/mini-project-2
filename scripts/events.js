@@ -2,94 +2,81 @@
 
 let events = [];
 let categories = new Set();
-let pagefilter = "all";
-let pageindex = 0;
+// Default to 25 events per page
+let pagefilter = 25;
+// Start on page 1
+let currentPage = 1;
 
 const getEvents = () => {
     return fetch('dataset/events.rss')
-    .then(response => response.text())
-    .then(str => {
-        let parser = new DOMParser();
-        let xmlDoc = parser.parseFromString(str, "text/xml");
-        let items = xmlDoc.querySelectorAll('item');
-        items.forEach(item => {
-            // Extract data
-            let title = item.querySelector('title') ? item.querySelector('title').textContent : 'No Title';
-            let enclosure = item.querySelector('enclosure');
-            let imageUrl = enclosure ? enclosure.getAttribute('url') : 'assets/default_img.png';
+        .then(response => response.text())
+        .then(str => {
+            let parser = new DOMParser();
+            let xmlDoc = parser.parseFromString(str, "text/xml");
+            let items = xmlDoc.querySelectorAll('item');
+            items.forEach(item => {
+                let title = item.querySelector('title') ? item.querySelector('title').textContent : 'No Title';
+                let enclosure = item.querySelector('enclosure');
+                let imageUrl = enclosure ? enclosure.getAttribute('url') : 'assets/default_img.png';
 
-            let startDateStr = item.querySelector('start') ? item.querySelector('start').textContent : null;
-            let startDate = startDateStr ? new Date(startDateStr) : new Date();
-            let options = { weekday: 'long', month: 'long', day: '2-digit', year: 'numeric' };
-            let formattedStartDate = startDate.toLocaleDateString('en-US', options);
+                let startDateStr = item.querySelector('start') ? item.querySelector('start').textContent : null;
+                let startDate = startDateStr ? new Date(startDateStr) : new Date();
+                let options = { weekday: 'long', month: 'long', day: '2-digit', year: 'numeric' };
+                let formattedStartDate = startDate.toLocaleDateString('en-US', options);
 
-            let location = item.querySelector('location').textContent || 'Location not present';
+                let location = item.querySelector('location').textContent || 'Location not present';
+                let descriptionCData = item.querySelector('description').textContent;
+                let descriptionParser = new DOMParser();
+                let descriptionDoc = descriptionParser.parseFromString(descriptionCData, "text/html");
+                let description = descriptionDoc.body.innerHTML;
 
-            let descriptionCData = item.querySelector('description').textContent;
-            let descriptionParser = new DOMParser();
-            let descriptionDoc = descriptionParser.parseFromString(descriptionCData, "text/html");
-            let description = descriptionDoc.body.innerHTML;
+                let category = item.querySelector('category') ? item.querySelector('category').textContent : 'Uncategorized';
+                categories.add(category);
 
-            let category = item.querySelector('category') ? item.querySelector('category').textContent : 'Uncategorized';
-            categories.add(category);
+                let event = {
+                    title,
+                    imageUrl,
+                    startDate: formattedStartDate,
+                    location,
+                    description,
+                    category,
+                };
+                events.push(event);
+            });
 
-            // Store current event data
-            let event = {
-                title,
-                imageUrl,
-                startDate: formattedStartDate,
-                location,
-                description,
-                category,
-            };
-            events.push(event);
-
-            createEventCard(event);
-
-        });
-
-        populateCategories(categories);
-        updateEventCount(events.length, events.length);
-        addFilterFunctionality(events);
-    })
-    .catch(error => console.error('error on fetching data', error));
+            populateCategories(categories);
+            updateEventCount(events.length, events.length);
+            renderEvents(events);
+            renderPagination(events.length);
+            addFilterFunctionality(events);
+        })
+        .catch(error => console.error('error on fetching data', error));
 }
 
-
-// ------ Helper Functions ------ //
-
-// Function to render list of events
-
+// Function to render the events for the current page
 function renderEvents(eventsToRender) {
-    let maxindex = 0;
-    let nextdisabled = false;
-    if (pagefilter === "all") {
-        maxindex = eventsToRender.length
-        pageindex = 0
-    } else {
-        if (eventsToRender.length < pageindex + pagefilter) {
-            maxindex = eventsToRender.length;
-            nextdisabled = true;
-        } else {
-            maxindex = pageindex + pagefilter;
-        }
-    }    
+    // Clear the main container
     document.querySelector('main').innerHTML = '';
-    if (pageindex === 0) {
-        document.getElementById("prev-nav-button").disabled = true;
+
+    let startIndex, endIndex;
+
+    if (pagefilter === "all") {
+        startIndex = 0;
+        endIndex = eventsToRender.length;
     } else {
-        document.getElementById("prev-nav-button").disabled = false;
+        startIndex = (currentPage - 1) * pagefilter;
+        endIndex = Math.min(startIndex + pagefilter, eventsToRender.length);
     }
 
-    document.getElementById("next-nav-button").disabled = nextdisabled;
-
-    for (let i = pageindex; i < maxindex; i++) {
-        createEventCard(eventsToRender[i])
+    for (let i = startIndex; i < endIndex; i++) {
+        createEventCard(eventsToRender[i]);
     }
+
+    updateEventCount(endIndex - startIndex, eventsToRender.length);
+    renderPagination(eventsToRender.length);
 }
 
 // Function to create an event card
-
 function createEventCard(event) {
     const article = document.createElement('article');
     article.innerHTML = `
@@ -101,7 +88,6 @@ function createEventCard(event) {
         <div class="description">${event.description}</div>
     `;
 
-    // Add toggle functionality for "Learn more"
     const learnMore = article.querySelector('.learn-more');
     const descriptionData = article.querySelector('.description');
 
@@ -128,7 +114,6 @@ function updateEventCount(count, total) {
 // Function to populate categories into the select element
 function populateCategories(categories) {
     const categorySelect = document.getElementById('filter-category');
-    // Clear any existing options
     categorySelect.innerHTML = '';
 
     const allOption = document.createElement('option');
@@ -154,12 +139,15 @@ function addFilterFunctionality(events) {
 
         let filteredEvents = events;
 
+        // Reset to page 1 when a filter is applied
+        currentPage = 1;
+
         // Filter by title
         if (titleValue) {
             filteredEvents = filterEvents(filteredEvents, titleValue, (event) => titleFilter(event, titleValue));
         }
 
-        // Filter by date 
+        // Filter by date
         if (dateValue) {
             filteredEvents = filterEvents(filteredEvents, dateValue, (event) => dateFilter(event, dateValue));
         }
@@ -174,30 +162,98 @@ function addFilterFunctionality(events) {
             filteredEvents = filterEvents(filteredEvents, categoryValue, (event) => categoryFilter(event, categoryValue));
         }
 
-        renderEvents(filteredEvents)
-
-        // Update event count
-        updateEventCount(filteredEvents.length, events.length);
+        // Render the filtered events on page 1
+        renderEvents(filteredEvents);
     });
 
-    // Add event listener to 'Clear Filters' button
+
     document.getElementById('clear-filters').addEventListener('click', () => {
-        // Clear filter input values
         document.getElementById('filter-title').value = '';
         document.getElementById('filter-date').value = '';
         document.getElementById('filter-description').value = '';
         document.getElementById('filter-category').value = '';
 
-        // Reset events display
-        document.querySelector('main').innerHTML = '';
-        events.forEach(event => createEventCard(event));
-
-        // Update event count
-        updateEventCount(events.length, events.length);
+        renderEvents(events);
     });
 }
 
-// -------- Filter functions -------- //
+// Dynamic Pagination based on current page
+function renderPagination(totalEvents) {
+    const paginationContainer = document.getElementById('pagination');
+    paginationContainer.innerHTML = '';
+
+    if (pagefilter === "all") return;
+
+    const totalPages = Math.ceil(totalEvents / pagefilter);
+    // Number of pages to show around the current page
+    const maxPagesToShow = 3;
+
+    const prevButton = document.createElement('button');
+    prevButton.textContent = 'Previous';
+    prevButton.disabled = currentPage === 1;
+    prevButton.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            renderEvents(events);
+        }
+    });
+    paginationContainer.appendChild(prevButton);
+
+    if (currentPage > 2) {
+        const firstPage = createPageLink(1);
+        paginationContainer.appendChild(firstPage);
+        if (currentPage > 3) {
+            const dots = document.createElement('span');
+            dots.textContent = '...';
+            paginationContainer.appendChild(dots);
+        }
+    }
+
+    for (let i = Math.max(1, currentPage - 1); i <= Math.min(totalPages, currentPage + 1); i++) {
+        const pageLink = createPageLink(i);
+        paginationContainer.appendChild(pageLink);
+    }
+
+    if (currentPage < totalPages - 1) {
+        if (currentPage < totalPages - 2) {
+            const dots = document.createElement('span');
+            dots.textContent = '...';
+            paginationContainer.appendChild(dots);
+        }
+        const lastPage = createPageLink(totalPages);
+        paginationContainer.appendChild(lastPage);
+    }
+
+    const nextButton = document.createElement('button');
+    nextButton.textContent = 'Next';
+    nextButton.disabled = currentPage === totalPages;
+    nextButton.addEventListener('click', () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            renderEvents(events);
+        }
+    });
+    paginationContainer.appendChild(nextButton);
+}
+
+// Helper function to create a page link
+function createPageLink(pageNumber) {
+    const pageLink = document.createElement('a');
+    pageLink.href = '#';
+    pageLink.textContent = pageNumber;
+    pageLink.classList.add('page-link');
+    if (pageNumber === currentPage) {
+        pageLink.classList.add('active');
+    }
+    pageLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        currentPage = pageNumber;
+        renderEvents(events);
+    });
+    return pageLink;
+}
+
+// Filter functions
 function filterEvents(events, filterValue, filterFunction) {
     if (!filterValue) return events;
     return events.filter(filterFunction);
@@ -221,44 +277,42 @@ function categoryFilter(event, category) {
     return event.category === category;
 }
 
-function amountOfEventFilter() {
-    document.getElementById('amount-filter').addEventListener('change', () => {
-        pagefilter = document.getElementById('filter-category').value
-    })
-}
-
-function nextPage() {
-    document.getElementById('next-nav-button').addEventListener('click', () => {
-        pageindex = pageindex + intamountFilter
-
-    })
-}
-
-document.getElementById('next-nav-button').addEventListener('click', () => {
-    if (pagefilter !== "all") {
-        pageindex = pageindex + Number(pagefilter)
-        renderEvents(events)
-    }
-})
-
-document.getElementById('prev-nav-button').addEventListener('click', () => {
-    if (pagefilter !== "all") {
-        pageindex = pageindex - Number(pagefilter)
-        pageindex = Math.max(0, pageindex)
-        renderEvents(events)
-    }
-})
-
 document.getElementById('amount-filter').addEventListener('change', () => {
-    pagefilter = document.getElementById('amount-filter').value
-    if (pagefilter === "all") {
-        document.getElementById('next-nav-button').disabled = true;
-        document.getElementById('prev-nav-button').disabled = true;
-    } else {
-        document.getElementById('next-nav-button').disabled = false;
-        document.getElementById('prev-nav-button').disabled = false;
+    const selectedValue = document.getElementById('amount-filter').value;
+
+    // Reset to page 1 when the number of cards per page changes
+    currentPage = 1;
+
+    pagefilter = selectedValue === "all" ? "all" : parseInt(selectedValue);
+
+    // Retrieve the currently applied filters
+    const titleValue = document.getElementById('filter-title').value;
+    const dateValue = document.getElementById('filter-date').value;
+    const descriptionValue = document.getElementById('filter-description').value;
+    const categoryValue = document.getElementById('filter-category').value;
+
+    let filteredEvents = events;
+
+    // Reapply the current filters to the events
+    if (titleValue) {
+        filteredEvents = filterEvents(filteredEvents, titleValue, (event) => titleFilter(event, titleValue));
     }
-    renderEvents(events)
-})
+
+    if (dateValue) {
+        filteredEvents = filterEvents(filteredEvents, dateValue, (event) => dateFilter(event, dateValue));
+    }
+
+    if (descriptionValue) {
+        filteredEvents = filterEvents(filteredEvents, descriptionValue, (event) => descriptionFilter(event, descriptionValue));
+    }
+
+    if (categoryValue) {
+        filteredEvents = filterEvents(filteredEvents, categoryValue, (event) => categoryFilter(event, categoryValue));
+    }
+
+    // Render the filtered events with the new page size
+    renderEvents(filteredEvents);
+});
+
 
 getEvents();
