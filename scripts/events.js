@@ -236,7 +236,7 @@ function renderPagination(totalEvents) {
     paginationContainer.appendChild(nextButton);
 }
 
-// Helper function to create a page link
+// Create a page link
 function createPageLink(pageNumber) {
     const pageLink = document.createElement('a');
     pageLink.href = '#';

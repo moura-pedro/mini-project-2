@@ -206,7 +206,7 @@ article h2 {
 }
 
 article p {
-    margin: 0px 0px 0px 10px;
+    margin: 0 0 0 10px;
 }
 
 article p.event-date {
@@ -229,6 +229,7 @@ article .description {
     margin-left: 10px;
     text-align: left;
 }
+
 
 /* Mobile Responsiveness for Cards */
 @media (max-width: 768px) {
